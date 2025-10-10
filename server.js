@@ -2,8 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path"; // ✅ Add path
 import productRoutes from "./routes/productRoutes.js";
-import userRoutes from "./routes/userRoutes.js"; // ✅ Import user routes
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -13,16 +14,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from uploads folder
+app.use('/uploads', express.static(path.join(path.resolve(), 'uploads'))); // ✅ Add this
+
 // Default route
 app.get("/", (req, res) => {
   res.send("Welcome to Electronics Shop API");
 });
 
-// Product routes
+// Product routes (includes /search)
 app.use("/api/products", productRoutes);
 
 // User routes
-app.use("/api/users", userRoutes); // ✅ Add user routes
+app.use("/api/users", userRoutes);
 
 // MongoDB connection
 mongoose

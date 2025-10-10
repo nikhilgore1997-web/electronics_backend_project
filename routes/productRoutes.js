@@ -51,4 +51,20 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// ✅ NEW: Search products by name
+// GET /api/products/search?q=term
+router.get("/search", async (req, res) => {
+  const term = req.query.q;
+  if (!term) return res.status(400).json({ message: "Missing search term" });
+
+  try {
+    const products = await Product.find({
+      name: { $regex: term, $options: "i" } // case-insensitive search
+    });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;
